@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.9"
+console_error_panic_hook = "0.1"
