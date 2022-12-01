@@ -9,17 +9,25 @@ fn main() {
 
     let mut app = App::new();
 
-    #[cfg(debug_assertions)]
-    app.add_plugins(DefaultPlugins.set(LogPlugin {
-        filter: "warn,bevy_portal=debug".into(),
-        level: Level::DEBUG,
-    }));
+    let default_plugins_with_settings = DefaultPlugins
+        .set(WindowPlugin {
+            window: WindowDescriptor {
+                fit_canvas_to_parent: true,
+                ..default()
+            },
+            ..default()
+        })
+        .set(if cfg!(debug_assertions) {
+            LogPlugin {
+                filter: "warn,bevy_portal=debug".into(),
+                level: Level::DEBUG,
+            }
+        } else {
+            LogPlugin {
+                filter: "warn".into(),
+                level: Level::WARN,
+            }
+        });
 
-    #[cfg(not(debug_assertions))]
-    app.add_plugins(DefaultPlugins.set(LogPlugin {
-        filter: "warn".into(),
-        level: Level::WARN,
-    }));
-
-    app.run();
+    app.add_plugins(default_plugins_with_settings).run();
 }
